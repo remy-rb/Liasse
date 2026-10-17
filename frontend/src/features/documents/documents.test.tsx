@@ -6,6 +6,8 @@ import { describe, expect, it } from 'vitest'
 import { backend, server } from '@/testing/mocks/server'
 import { renderApp } from '@/testing/render-app'
 
+const unfiled = { title: null, category: null, correspondent: null, document_date: null }
+
 const pdf = (name: string, size = 10) => new File(['x'.repeat(size)], name, { type: 'application/pdf' })
 
 describe('Documents', () => {
@@ -21,6 +23,7 @@ describe('Documents', () => {
         id: '1',
         status: 'inbox',
         original_filename: 'edf.pdf',
+        ...unfiled,
         page_count: 2,
         failure_reason: null,
         created_at: '2026-10-17T10:00:00Z',
@@ -29,6 +32,7 @@ describe('Documents', () => {
         id: '2',
         status: 'failed',
         original_filename: 'blurry.jpg',
+        ...unfiled,
         page_count: 1,
         failure_reason: 'Liasse couldn’t process this file.',
         created_at: '2026-10-17T09:00:00Z',
@@ -44,12 +48,38 @@ describe('Documents', () => {
     expect(second).toHaveTextContent('Liasse couldn’t process this file.')
   })
 
+  it('shows where a Filed Document went', async () => {
+    backend.documents = [
+      {
+        id: '1',
+        status: 'filed',
+        original_filename: 'scan.pdf',
+        title: 'Facture électricité',
+        category: 'Invoices',
+        correspondent: 'EDF',
+        document_date: '2025-03-14',
+        page_count: 2,
+        failure_reason: null,
+        created_at: '2026-10-17T10:00:00Z',
+      },
+    ]
+    renderApp('/')
+
+    const [item] = within(await screen.findByRole('list', { name: 'Documents' })).getAllByRole('listitem')
+    expect(item).toHaveTextContent('Facture électricité')
+    expect(item).toHaveTextContent('Invoices › EDF')
+    expect(item).toHaveTextContent('2025')
+    expect(item).toHaveTextContent('Filed')
+    expect(item).not.toHaveTextContent('scan.pdf')
+  })
+
   it('refreshes while a Document is processing', async () => {
     backend.documents = [
       {
         id: '1',
         status: 'processing',
         original_filename: 'edf.pdf',
+        ...unfiled,
         page_count: 1,
         failure_reason: null,
         created_at: '2026-10-17T10:00:00Z',

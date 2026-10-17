@@ -6,6 +6,8 @@ import { useDocuments } from '../api/documents'
 import { StatusBadge } from './status-badge'
 
 const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+// A Document Date is a calendar day; format it in UTC so it never shifts by a day.
+const dayFormat = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeZone: 'UTC' })
 
 export function DocumentsList() {
   const { data, isPending, isError } = useDocuments()
@@ -28,10 +30,20 @@ export function DocumentsList() {
           {data.map((document) => (
             <li key={document.id} className="flex items-center justify-between gap-4 px-4 py-3">
               <div className="min-w-0">
-                <p className="truncate font-medium">{document.original_filename}</p>
+                <p className="truncate font-medium">{document.title ?? document.original_filename}</p>
                 <p className="text-sm text-muted-foreground">
-                  {document.page_count} {document.page_count === 1 ? 'page' : 'pages'} ·{' '}
-                  {dateFormat.format(new Date(document.created_at))}
+                  {document.category && document.correspondent ? (
+                    <>
+                      {document.category} › {document.correspondent}
+                      {document.document_date &&
+                        ` · ${dayFormat.format(new Date(document.document_date))}`}
+                    </>
+                  ) : (
+                    <>
+                      {document.page_count} {document.page_count === 1 ? 'page' : 'pages'} ·{' '}
+                      {dateFormat.format(new Date(document.created_at))}
+                    </>
+                  )}
                 </p>
                 {document.failure_reason && (
                   <p className="text-sm text-destructive">{document.failure_reason}</p>

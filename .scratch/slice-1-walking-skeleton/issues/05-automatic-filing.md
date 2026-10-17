@@ -6,12 +6,12 @@
 
 **Status:** ready-for-agent
 
-- [ ] Default Categories exist for the Owner after first-run setup
-- [ ] LLM provider, model, API key or base URL come from Settings (Claude, OpenAI and Ollama supported via LiteLLM)
-- [ ] A confident classification Files the Document at the right Archive path with the right name
-- [ ] A classification naming an existing Correspondent reuses it; an unknown one creates it
-- [ ] Any field below the threshold sends the Document to `Inbox/` with guesses and per-field reasons stored
-- [ ] Names are sanitised for every filesystem; collisions get `-2`, `-3` suffixes and never overwrite
-- [ ] Invalid model output fails clearly rather than filing garbage
-- [ ] The Documents list shows Category, Correspondent, Document Date and title
-- [ ] Tests use the Models fake to cover Filed, Inbox, Correspondent reuse/creation and naming
+- [x] Default Categories exist for the Owner after first-run setup
+- [x] LLM provider, model, API key or base URL come from Settings (Claude, OpenAI and Ollama supported via LiteLLM)
+- [x] A confident classification Files the Document at the right Archive path with the right name
+- [x] A classification naming an existing Correspondent reuses it; an unknown one creates it
+- [x] Any field below the threshold sends the Document to `Inbox/` with guesses and per-field reasons stored
+- [x] Names are sanitised for every filesystem; collisions get `-2`, `-3` suffixes and never overwrite
+- [x] Invalid model output fails clearly rather than filing garbage
+- [x] The Documents list shows Category, Correspondent, Document Date and title
+- [x] Tests use the Models fake to cover Filed, Inbox, Correspondent reuse/creation and naming

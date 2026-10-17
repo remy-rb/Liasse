@@ -9,7 +9,8 @@ from pydantic import BaseModel, Field
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
-from liasse.db import Owner, get_db
+from liasse.categories import DEFAULT_CATEGORIES
+from liasse.db import Category, Owner, get_db
 
 hasher = PasswordHasher()
 
@@ -68,6 +69,8 @@ def set_up(body: SetupRequest, request: Request, db: Db) -> None:
         raise HTTPException(status.HTTP_409_CONFLICT, "Liasse is already set up")
     owner = Owner(password_hash=hasher.hash(body.password))
     db.add(owner)
+    db.flush()
+    db.add_all(Category(owner_id=owner.id, name=name) for name in DEFAULT_CATEGORIES)
     db.commit()
     request.session["owner_id"] = str(owner.id)
 

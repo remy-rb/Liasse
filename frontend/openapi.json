@@ -278,6 +278,7 @@
             "type": "string",
             "enum": [
               "processing",
+              "filed",
               "inbox",
               "failed"
             ],
@@ -286,6 +287,51 @@
           "original_filename": {
             "type": "string",
             "title": "Original Filename"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "correspondent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Correspondent"
+          },
+          "document_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Date"
           },
           "page_count": {
             "type": "integer",
@@ -313,6 +359,10 @@
           "id",
           "status",
           "original_filename",
+          "title",
+          "category",
+          "correspondent",
+          "document_date",
           "page_count",
           "failure_reason",
           "created_at"

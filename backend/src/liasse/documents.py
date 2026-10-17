@@ -1,11 +1,11 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Annotated, Literal
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, status
 from pydantic import BaseModel
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from liasse.archive import Archive
 from liasse.auth import CurrentOwner, require_owner
@@ -20,11 +20,30 @@ Db = Annotated[Session, Depends(get_db)]
 
 class DocumentOut(BaseModel):
     id: UUID
-    status: Literal["processing", "inbox", "failed"]
+    status: Literal["processing", "filed", "inbox", "failed"]
     original_filename: str
+    title: str | None
+    category: str | None
+    correspondent: str | None
+    document_date: date | None
     page_count: int
     failure_reason: str | None
     created_at: datetime
+
+    @classmethod
+    def of(cls, document: Document) -> "DocumentOut":
+        return cls(
+            id=document.id,
+            status=document.status,
+            original_filename=document.original_filename,
+            title=document.title,
+            category=document.category.name if document.category else None,
+            correspondent=document.correspondent.name if document.correspondent else None,
+            document_date=document.document_date,
+            page_count=document.page_count,
+            failure_reason=document.failure_reason,
+            created_at=document.created_at,
+        )
 
 
 class Rejected(BaseModel):
@@ -123,7 +142,7 @@ def upload_documents(
         accepted.append(document)
     db.commit()
     return UploadResult(
-        accepted=[DocumentOut.model_validate(d, from_attributes=True) for d in accepted],
+        accepted=[DocumentOut.of(d) for d in accepted],
         rejected=rejected,
     )
 
@@ -132,7 +151,8 @@ def upload_documents(
 def list_documents(owner: CurrentOwner, db: Db) -> list[DocumentOut]:
     documents = db.scalars(
         select(Document)
+        .options(selectinload(Document.category), selectinload(Document.correspondent))
         .where(Document.owner_id == owner.id)
         .order_by(Document.created_at.desc(), Document.id)
     )
-    return [DocumentOut.model_validate(d, from_attributes=True) for d in documents]
+    return [DocumentOut.of(d) for d in documents]

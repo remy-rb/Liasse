@@ -168,9 +168,17 @@ export interface components {
              * Status
              * @enum {string}
              */
-            status: "processing" | "inbox" | "failed";
+            status: "processing" | "filed" | "inbox" | "failed";
             /** Original Filename */
             original_filename: string;
+            /** Title */
+            title: string | null;
+            /** Category */
+            category: string | null;
+            /** Correspondent */
+            correspondent: string | null;
+            /** Document Date */
+            document_date: string | null;
             /** Page Count */
             page_count: number;
             /** Failure Reason */

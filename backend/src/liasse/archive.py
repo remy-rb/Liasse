@@ -3,6 +3,7 @@
 import posixpath
 import re
 import unicodedata
+from datetime import date
 from uuid import UUID
 
 from fsspec.core import url_to_fs
@@ -56,3 +57,17 @@ class Archive:
 
     def inbox_path(self, owner_id: UUID, stem: str) -> str:
         return self.free_path(posixpath.join(str(owner_id), INBOX), stem, ".pdf")
+
+    def filed_path(
+        self, owner_id: UUID, category: str, correspondent: str, document_date: date, title: str
+    ) -> str:
+        """`<Owner>/<Category>/<Correspondent>/YYYY-MM-DD_<Correspondent>_<title>.pdf`."""
+        folder = posixpath.join(str(owner_id), safe_name(category), safe_name(correspondent))
+        stem = "_".join(
+            [
+                document_date.isoformat(),
+                safe_name(correspondent),
+                safe_name(title).replace(" ", "-"),
+            ]
+        )
+        return self.free_path(folder, stem, ".pdf")
