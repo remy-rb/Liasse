@@ -10,5 +10,6 @@ if __name__ == "__main__":
     settings = Settings(
         database_url="postgresql+psycopg://schema@localhost/schema",
         session_secret="schema-only-not-a-real-secret-0000000",
+        storage_url="memory://schema",
     )
     print(json.dumps(create_app(settings).openapi(), indent=2))

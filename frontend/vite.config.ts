@@ -13,7 +13,7 @@ export default defineConfig({
     proxy: { '/api': process.env.LIASSE_API_URL ?? 'http://localhost:8000' },
   },
   test: {
-    environment: 'jsdom',
+    environment: 'happy-dom',
     setupFiles: ['./src/testing/setup-tests.ts'],
   },
 })

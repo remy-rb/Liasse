@@ -18,10 +18,14 @@ services:
 
   backend:
     build: ./backend
-    environment:
+    environment: &backend-environment
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-liasse}:${POSTGRES_PASSWORD:-liasse}@db:5432/${POSTGRES_DB:-liasse}
       SESSION_SECRET: ${SESSION_SECRET:?Run make setup to create .env}
       SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-false}
+      STORAGE_URL: /data
+      UPLOAD_MAX_BYTES: ${UPLOAD_MAX_BYTES:-52428800}
+    volumes: &archive-volume
+      - ${ARCHIVE_DIR:-archive-data}:/data
     depends_on:
       db:
         condition: service_healthy
@@ -30,6 +34,15 @@ services:
       interval: 2s
       timeout: 3s
       retries: 30
+
+  worker:
+    build: ./backend
+    command: ["uv", "run", "--no-sync", "python", "-m", "liasse.worker"]
+    environment: *backend-environment
+    volumes: *archive-volume
+    depends_on:
+      backend:
+        condition: service_healthy
 
   frontend:
     build: ./frontend
@@ -41,3 +54,4 @@ services:
 
 volumes:
   db-data:
+  archive-data:

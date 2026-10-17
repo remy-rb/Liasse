@@ -1,5 +1,6 @@
 # Run `make setup` once, then `make dev`.
 -include .env
+STORAGE_URL ?= $(CURDIR)/data
 export
 
 .PHONY: setup db dev up down test lint api-client
@@ -12,10 +13,11 @@ setup: ## Install both sides and create .env
 db: ## Start Postgres in Docker
 	docker compose up -d --wait db
 
-dev: db ## Run backend and frontend with hot reload (http://localhost:5173)
+dev: db ## Run backend, worker and frontend with hot reload (http://localhost:5173)
 	cd backend && uv run alembic upgrade head
 	@trap 'kill 0' INT TERM EXIT; \
 	(cd backend && uv run uvicorn liasse.asgi:app --reload --port 8000) & \
+	(cd backend && uv run python -m liasse.worker) & \
 	(cd frontend && pnpm dev) & \
 	wait
 

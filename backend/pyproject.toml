@@ -10,9 +10,14 @@ dependencies = [
     "alembic>=1.20.0",
     "argon2-cffi>=25.1.0",
     "fastapi>=0.143.3",
+    "fsspec>=2026.9.0",
     "itsdangerous>=2.2.0",
+    "pillow>=13.0.0",
+    "pillow-heif>=1.8.1",
     "psycopg[binary]>=3.3.6",
     "pydantic-settings>=2.16.0",
+    "pypdf>=6.21.1",
+    "python-multipart>=0.0.32",
     "sqlalchemy>=2",
     "uvicorn[standard]>=0.54.0",
 ]
@@ -41,3 +46,8 @@ plugins = ["pydantic.mypy"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["tests"]
+
+[[tool.mypy.overrides]]
+module = ["fsspec.*"]
+ignore_missing_imports = true

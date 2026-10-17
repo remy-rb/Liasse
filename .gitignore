@@ -1,4 +1,6 @@
 .env
+# Local Archive used by `make dev`
+/data/
 .DS_Store
 
 # Python

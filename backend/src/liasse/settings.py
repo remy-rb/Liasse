@@ -11,6 +11,9 @@ class Settings(BaseSettings):
     session_secret: SecretStr = Field(min_length=32)
     # Only send the session cookie over HTTPS; turn on once Liasse is served over HTTPS.
     session_cookie_secure: bool = False
+    # Where the Archive lives, read through fsspec: a local path or file:// URL (s3:// comes later).
+    storage_url: str
+    upload_max_bytes: int = Field(default=50 * 1024 * 1024, gt=0)
 
 
 def load_settings() -> Settings:
