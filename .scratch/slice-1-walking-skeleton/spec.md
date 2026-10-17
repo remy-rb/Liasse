@@ -150,7 +150,7 @@ The whole stack starts with a couple of Makefile commands, and the LLM provider 
 
 ### Frontend
 
-- Vite + React + TypeScript, bulletproof-react layout: `app` (routes, providers), `features/<feature>` (auth, documents, inbox, search, questions, capture), shared `components` and `lib`. TanStack Query for server state.
+- Vite + React + TypeScript with Tailwind CSS and shadcn/ui defaults (mobile-first; no custom visual design in this slice), bulletproof-react layout: `app` (routes, providers), `features/<feature>` (auth, documents, inbox, search, questions, capture), shared `components` and `lib`. TanStack Query for server state.
 - Screens: first-run setup, login, Documents (list with filters and statuses, Document view with page viewer and download), Upload, Inbox (with the guesses and per-field reasons, and a file form), Search, Ask (Question box, Answer with clickable Citations).
 - Installable PWA (manifest, icons, service worker caching the app shell only). Online only: an offline banner is shown and uploads are disabled while offline.
 
