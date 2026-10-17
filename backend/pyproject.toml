@@ -12,6 +12,7 @@ dependencies = [
     "fastapi>=0.143.3",
     "fsspec>=2026.9.0",
     "itsdangerous>=2.2.0",
+    "ocrmypdf>=17.13.0",
     "pillow>=13.0.0",
     "pillow-heif>=1.8.1",
     "psycopg[binary]>=3.3.6",

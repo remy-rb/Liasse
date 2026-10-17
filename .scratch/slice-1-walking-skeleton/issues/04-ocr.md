@@ -6,8 +6,8 @@
 
 **Status:** ready-for-agent
 
-- [ ] The PDF in the Archive has a text layer (verified in tests by extracting text from it)
-- [ ] French and English fixtures produce their expected key words in the extracted text
-- [ ] Per-page text is stored and linked to the Document and page number
-- [ ] A PDF that already has a text layer is still processed correctly
-- [ ] The Docker images and `make setup` install Tesseract with French and English language packs
+- [x] The PDF in the Archive has a text layer (verified in tests by extracting text from it)
+- [x] French and English fixtures produce their expected key words in the extracted text
+- [x] Per-page text is stored and linked to the Document and page number
+- [x] A PDF that already has a text layer is still processed correctly
+- [x] The Docker images and `make setup` install Tesseract with French and English language packs

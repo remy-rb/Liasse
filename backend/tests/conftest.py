@@ -42,7 +42,7 @@ def migrated_database(settings: Settings) -> None:
 @pytest.fixture(autouse=True)
 def empty_database_and_archive(settings: Settings) -> None:
     with make_engine(settings).begin() as connection:
-        connection.execute(text("TRUNCATE owner, document, job CASCADE"))
+        connection.execute(text("TRUNCATE owner, document, job, page CASCADE"))
     memory = fsspec.filesystem("memory")
     memory.store.clear()
     memory.pseudo_dirs.clear()

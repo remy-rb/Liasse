@@ -4,12 +4,13 @@ import logging
 import posixpath
 import time
 
-from sqlalchemy import Engine, func, select
+from sqlalchemy import Engine, delete, func, select
 from sqlalchemy.orm import Session
 
 from liasse.archive import Archive
-from liasse.db import Job, make_engine
+from liasse.db import Job, Page, make_engine
 from liasse.files import to_pdf
+from liasse.ocr import ocr
 from liasse.settings import get_settings
 
 log = logging.getLogger("liasse.worker")
@@ -33,13 +34,20 @@ def claim_next_job(db: Session) -> Job | None:
     return job
 
 
-def process(job: Job, archive: Archive) -> None:
+def process(job: Job, db: Session, archive: Archive) -> None:
     document = job.document
     pdf = to_pdf(archive.read(document.original_path), document.content_type)
+    searchable, texts = ocr(pdf)
     stem = posixpath.splitext(document.original_filename)[0]
     path = archive.inbox_path(document.owner_id, stem)
-    archive.write(path, pdf)
+    archive.write(path, searchable)
     document.archive_path = path
+    # Replace, not add: a Document may be processed again.
+    db.execute(delete(Page).where(Page.document_id == document.id))
+    db.add_all(
+        Page(document_id=document.id, number=number, text=text)
+        for number, text in enumerate(texts, start=1)
+    )
     # Until automatic filing exists, every Document waits in the Inbox.
     document.status = "inbox"
 
@@ -54,7 +62,7 @@ def run_pending_jobs(engine: Engine, archive: Archive) -> int:
                 return count
             count += 1
             try:
-                process(job, archive)
+                process(job, db, archive)
                 job.state = "done"
             except Exception as error:
                 # shortcut: a failure is final for now; retries come with ticket 07.

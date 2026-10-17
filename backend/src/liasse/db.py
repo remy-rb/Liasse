@@ -3,7 +3,7 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 from fastapi import Request
-from sqlalchemy import DateTime, Engine, ForeignKey, create_engine, func
+from sqlalchemy import DateTime, Engine, ForeignKey, UniqueConstraint, create_engine, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship
 
 from liasse.settings import Settings
@@ -38,6 +38,18 @@ class Document(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.clock_timestamp()
     )
+
+
+class Page(Base):
+    """The text of one page of a Document, as read by OCR."""
+
+    __tablename__ = "page"
+    __table_args__ = (UniqueConstraint("document_id", "number"),)
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    document_id: Mapped[UUID] = mapped_column(ForeignKey("document.id"))
+    number: Mapped[int]  # 1-based, as people count pages
+    text: Mapped[str]
 
 
 class Job(Base):

@@ -1,0 +1,22 @@
+{
+  "fr-facture-electricite.pdf": [
+    [
+      "Électricité",
+      "Facture",
+      "84,32",
+      "Dupont"
+    ],
+    [
+      "consommation",
+      "312 kWh"
+    ]
+  ],
+  "en-payslip.jpg": [
+    [
+      "Acme",
+      "Payslip",
+      "3,200.00",
+      "Smith"
+    ]
+  ]
+}
