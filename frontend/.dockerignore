@@ -1,0 +1,4 @@
+node_modules
+dist
+# The image already has the right Node; pnpm must not download another.
+.npmrc
