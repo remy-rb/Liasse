@@ -4,7 +4,9 @@ from fastapi import APIRouter, FastAPI, Request
 from pydantic import BaseModel
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
+from starlette.middleware.sessions import SessionMiddleware
 
+from liasse import auth
 from liasse.db import make_engine
 from liasse.settings import Settings, get_settings
 
@@ -27,9 +29,22 @@ def health(request: Request) -> Health:
     return Health(status="ok", database="ok")
 
 
+SESSION_MAX_AGE = 60 * 60 * 24 * 30  # Stay logged in for 30 days.
+
+
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or get_settings()
     app = FastAPI(title="Liasse", version="0.1.0")
     app.state.engine = make_engine(settings)
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key=settings.session_secret.get_secret_value(),
+        session_cookie="liasse_session",
+        max_age=SESSION_MAX_AGE,
+        same_site="lax",
+        https_only=settings.session_cookie_secure,
+    )
     app.include_router(router)
+    app.include_router(auth.public)
+    app.include_router(auth.protected)
     return app

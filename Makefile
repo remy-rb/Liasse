@@ -5,7 +5,7 @@ export
 .PHONY: setup db dev up down test lint api-client
 
 setup: ## Install both sides and create .env
-	@test -f .env || cp .env.example .env
+	@test -f .env || sed "s/^SESSION_SECRET=change-me$$/SESSION_SECRET=$$(openssl rand -hex 32)/" .env.example > .env
 	cd backend && uv sync
 	cd frontend && pnpm install
 

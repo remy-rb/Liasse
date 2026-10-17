@@ -6,10 +6,10 @@
 
 **Status:** ready-for-agent
 
-- [ ] With no Owner, the app shows first-run setup; setting a password creates the Owner (password hashed) and logs in
-- [ ] First-run setup is impossible once an Owner exists
-- [ ] Login with the right password sets a session cookie; a wrong password is rejected without revealing details
-- [ ] Logout clears the session
-- [ ] Protected routes return 401 without a session; the PWA redirects to login
-- [ ] Session secret comes from Settings
-- [ ] Backend tests through the HTTP API cover setup, login, logout and protection; frontend tests (MSW) cover the setup and login screens
+- [x] With no Owner, the app shows first-run setup; setting a password creates the Owner (password hashed) and logs in
+- [x] First-run setup is impossible once an Owner exists
+- [x] Login with the right password sets a session cookie; a wrong password is rejected without revealing details
+- [x] Logout clears the session
+- [x] Protected routes return 401 without a session; the PWA redirects to login
+- [x] Session secret comes from Settings
+- [x] Backend tests through the HTTP API cover setup, login, logout and protection; frontend tests (MSW) cover the setup and login screens

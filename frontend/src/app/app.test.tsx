@@ -30,10 +30,10 @@ describe('app shell', () => {
     expect(await screen.findByText('Backend unreachable')).toBeInTheDocument()
   })
 
-  it('links to every main screen', () => {
+  it('links to every main screen', async () => {
     renderApp('/inbox')
 
-    expect(screen.getByRole('heading', { name: 'Inbox' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Inbox' })).toBeInTheDocument()
     const [nav] = screen.getAllByRole('navigation', { name: 'Main' })
     for (const label of ['Documents', 'Inbox', 'Upload', 'Search', 'Ask']) {
       expect(nav).toHaveTextContent(label)

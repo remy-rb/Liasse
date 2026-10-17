@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-from pydantic import PostgresDsn, ValidationError
+from pydantic import Field, PostgresDsn, SecretStr, ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(extra="ignore")
 
     database_url: PostgresDsn
+    session_secret: SecretStr = Field(min_length=32)
+    # Only send the session cookie over HTTPS; turn on once Liasse is served over HTTPS.
+    session_cookie_secure: bool = False
 
 
 def load_settings() -> Settings:

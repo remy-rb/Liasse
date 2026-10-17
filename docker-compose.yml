@@ -20,6 +20,8 @@ services:
     build: ./backend
     environment:
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-liasse}:${POSTGRES_PASSWORD:-liasse}@db:5432/${POSTGRES_DB:-liasse}
+      SESSION_SECRET: ${SESSION_SECRET:?Run make setup to create .env}
+      SESSION_COOKIE_SECURE: ${SESSION_COOKIE_SECURE:-false}
     depends_on:
       db:
         condition: service_healthy

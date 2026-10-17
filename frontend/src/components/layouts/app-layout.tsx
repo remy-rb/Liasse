@@ -1,6 +1,8 @@
-import { FileText, Inbox, MessageCircleQuestion, Search, Upload } from 'lucide-react'
+import { FileText, Inbox, LogOut, MessageCircleQuestion, Search, Upload } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router'
 
+import { Button } from '@/components/ui/button'
+import { useLogOut } from '@/features/auth/api/auth'
 import { HealthStatus } from '@/features/health/components/health-status'
 import { cn } from '@/lib/utils'
 
@@ -20,7 +22,10 @@ export function AppLayout() {
         <nav aria-label="Main" className="hidden gap-1 md:flex">
           <NavItems />
         </nav>
-        <HealthStatus />
+        <div className="flex items-center gap-2">
+          <HealthStatus />
+          <LogOutButton />
+        </div>
       </header>
       <main className="flex-1 px-4 py-6 pb-24 md:pb-6">
         <Outlet />
@@ -54,4 +59,20 @@ function NavItems({ compact = false }: { compact?: boolean }) {
       {label}
     </NavLink>
   ))
+}
+
+function LogOutButton() {
+  const logOut = useLogOut()
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label="Log out"
+      title="Log out"
+      disabled={logOut.isPending}
+      onClick={() => logOut.mutate({})}
+    >
+      <LogOut className="size-5" aria-hidden />
+    </Button>
+  )
 }

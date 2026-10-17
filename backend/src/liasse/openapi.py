@@ -7,5 +7,8 @@ from liasse.settings import Settings
 
 if __name__ == "__main__":
     # The schema doesn't depend on settings; a placeholder URL avoids needing a real database.
-    settings = Settings(database_url="postgresql+psycopg://schema@localhost/schema")
+    settings = Settings(
+        database_url="postgresql+psycopg://schema@localhost/schema",
+        session_secret="schema-only-not-a-real-secret-0000000",
+    )
     print(json.dumps(create_app(settings).openapi(), indent=2))
